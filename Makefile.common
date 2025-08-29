@@ -3,7 +3,7 @@
 # Ocaml commands
 CAMLC=ocamlc
 CAMLOPT=ocamlopt
-CAMLP4O=camlp5o pr_o.cmo
+CAMLP4O=not-ocamlfind preprocess -package camlp5.pr_o -syntax camlp5o
 OCAMLFIND=ocamlfind
 COMPILER=$(CAMLC) -c -w s #-warn-error A
 OPTCOMP=$(CAMLOPT) -c
@@ -61,5 +61,7 @@ include $(CONFIG)
 
 ifneq ($(CAMLP4O),no)
 .ml4.ml:
-	$(CAMLP4O) -impl $< -o $@
+	cp $< $*_ml4.ml
+	$(CAMLP4O) $*_ml4.ml > $@.NEW && mv $@.NEW $@
+	rm -f $*_ml4.ml
 endif
